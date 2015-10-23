@@ -1,8 +1,10 @@
+{% load staticfiles %}
 <HTML>
 <head>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+    <link rel="stylesheet" href="{% static "leaflet-0.7.5/leaflet.css" %}">
+    <script src="{% static "leaflet-0.7.5/leaflet.js" %}"></script>
+    <script src="{% static "jquery-1.11.3.min.js" %}" type="text/javascript" charset="utf-8"></script>
+
 </head>
 <body>
     <div id="map" style="height:600px;"></div>
