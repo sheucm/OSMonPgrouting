@@ -43,9 +43,6 @@
 
         map.setView(new L.LatLng(22.996870, 120.213572), 12);
 
-        
-
-
         var marker;
         var marker_lon = 0.0;
         var marker_lat = 0.0;
@@ -59,14 +56,20 @@
         }
         map.on('click', onMapClick);
 
-
+        var source_marker;
         $('#get_source_gis').click(function() {
+            if (source_marker != null)  
+                map.removeLayer(source_marker);
+            source_marker = new L.marker([marker_lat,marker_lon]).addTo(map);;
             $('#source_lat').val(marker_lat);
             $('#source_lon').val(marker_lon);
         });
 
-
+        var target_marker;
         $('#get_target_gis').click(function() {
+            if (target_marker != null)  
+                map.removeLayer(target_marker);
+            target_marker = new L.marker([marker_lat,marker_lon]).addTo(map);;
             $('#target_lat').val(marker_lat);
             $('#target_lon').val(marker_lon);
         });
@@ -80,17 +83,8 @@
                 data: submit_data,
             })
             .done(function(geojsonFeature) {
-                alert("成功");
-
-                coors = geojsonFeature.geometry.coordinates;
-                var pointList = [];
-
-                for (i=0; i<coors.length; i++){
-                    point = L.latLng(coors[i][0], coors[i][1]);
-                    pointList.push(point);
-                }
-                var polyline = L.polyline(pointList, {color: 'red'}).addTo(map);
-
+                alert("成功");    
+                L.geoJson(geojsonFeature).addTo(map);
             })
             .fail(function() {
                 alert("失敗");

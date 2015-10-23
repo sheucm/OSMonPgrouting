@@ -69,6 +69,9 @@ DATABASES = {
     }
 }
 
+import dj_database_url
+DATABASES['default'] =  dj_database_url.parse('postgres://chengmao:netdb@140.116.247.114:5432/pg_tainan')
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
 
