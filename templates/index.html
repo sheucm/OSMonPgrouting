@@ -1,46 +1,39 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
-        <title>Gis Creator</title>
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" type="text/css" media="all" />
-        <link rel="stylesheet" href="https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.css" type="text/css" media="all" />
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="https://api.mapbox.com/mapbox.js/v2.2.2/mapbox.js" type="text/javascript" charset="utf-8"></script>
-        <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js" type="text/javascript" charset="utf-8"></script>
-    </head>
-    <body>
-        <div id="map" class="map_style">
-        </div>
+<HTML>
+<head>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.5/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+</head>
+<body>
+    <div id="map" style="height:600px;"></div>
+    <div>
+        <h1>Source</h1>
         <div>
-        	<h1>Source</h1>
-        	<div>
-	            Latitude: 
-	            <input type="text" name="item" id="source_lat" value="" />
-	            <br>
-	            Longitude: 
-	            <input type="text" name="item" id="source_lon" value="" />
-            </div>
-            <button id="get_source_gis" type="submit">取得位置</button>
+            Latitude: 
+            <input type="text" name="item" id="source_lat" value="" />
+            <br>
+            Longitude: 
+            <input type="text" name="item" id="source_lon" value="" />
         </div>
+        <button id="get_source_gis" type="submit">取得位置</button>
+    </div>
 
+    <div>
+        <h1>Target</h1>
         <div>
-        	<h1>Target</h1>
-        	<div>
-	            Latitude: 
-	            <input type="text" name="item" id="target_lat" value="" />
-	            <br>
-	            Longitude: 
-	            <input type="text" name="item" id="target_lon" value="" />
-            </div>
-            <button id="get_target_gis" type="submit">取得位置</button>
+            Latitude: 
+            <input type="text" name="item" id="target_lat" value="" />
+            <br>
+            Longitude: 
+            <input type="text" name="item" id="target_lon" value="" />
         </div>
-        <br>
-        <button id="gis_submit" type="submit">開始Routing</button>
-    </body>
-    <script type="text/javascript" charset="utf-8">
-        var map = L.map('map').setView([22.996870, 120.213572], 14);
+        <button id="get_target_gis" type="submit">取得位置</button>
+    </div>
+    <br>
+    <button id="gis_submit" type="submit">開始Routing</button>    
+
+    <script type="text/javascript">
+        var map = L.map('map').setView([51.505, -0.09], 13);
         L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             maxZoom: 18,
@@ -48,35 +41,39 @@
             accessToken: 'pk.eyJ1Ijoic2hldWNtIiwiYSI6ImNpZjZnaWp5MzA5eWR0YW01Mm40cjB6c3cifQ.PEV8DDuHbEGVskBrPrGnKA'
         }).addTo(map);
 
+        map.setView(new L.LatLng(22.996870, 120.213572), 12);
+
+        
 
 
         var marker;
         var marker_lon = 0.0;
         var marker_lat = 0.0;
-		function onMapClick(e) {
-		    //alert("You clicked the map at " + e.latlng.lat);
-		    if (marker != null)
-		    	map.removeLayer(marker);
-		    marker = L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
-		    marker_lon = e.latlng.lng;
-		    marker_lat = e.latlng.lat;
-		}
-		map.on('click', onMapClick);
+        function onMapClick(e) {
+            //alert("You clicked the map at " + e.latlng.lat);
+            if (marker != null)
+                map.removeLayer(marker);
+            marker = L.marker([e.latlng.lat,e.latlng.lng]).addTo(map);
+            marker_lon = e.latlng.lng;
+            marker_lat = e.latlng.lat;
+        }
+        map.on('click', onMapClick);
 
 
         $('#get_source_gis').click(function() {
-        	$('#source_lat').val(marker_lat);
-        	$('#source_lon').val(marker_lon);
+            $('#source_lat').val(marker_lat);
+            $('#source_lon').val(marker_lon);
         });
 
 
         $('#get_target_gis').click(function() {
-        	$('#target_lat').val(marker_lat);
-        	$('#target_lon').val(marker_lon);
+            $('#target_lat').val(marker_lat);
+            $('#target_lon').val(marker_lon);
         });
 
-		$('#gis_submit').click(function() {
+        $('#gis_submit').click(function() {
             var submit_data = {"source_lon": $('#source_lon').val(), "source_lat": $('#source_lat').val(), "target_lon": $('#target_lon').val(), "target_lat": $('#target_lat').val()};
+            var data = null;
             $.ajax({
                 type: "GET",
                 url: '/do_routing/',
@@ -85,30 +82,24 @@
             .done(function(geojsonFeature) {
                 alert("成功");
 
-                pointList = [];
-                coors = geojsonFeature['geometry']['coordinates'];
-                for (var latlon in coors){
-                    var point = new L.LatLng(latlon[1], latlon[0]);
-                    pointList.push(point)
+                coors = geojsonFeature.geometry.coordinates;
+                var pointList = [];
+
+                for (i=0; i<coors.length; i++){
+                    point = L.latLng(coors[i][0], coors[i][1]);
+                    pointList.push(point);
                 }
-                console.log(pointList);
+                var polyline = L.polyline(pointList, {color: 'red'}).addTo(map);
 
-                var myLayer = L.polyline(pointList, {color: 'red'}).addTo(map);
-                
-
-                //console.log(geojsonFeature)
-                
             })
             .fail(function() {
                 alert("失敗");
             });
+
+            
+
         });
 
-
-
-
     </script>
-    <style type="text/css" media="screen">
-        #map {width: 100%; height: 400px;}
-    </style>
-</html>
+</body>
+</HTML>
