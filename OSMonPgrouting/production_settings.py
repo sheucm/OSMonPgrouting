@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
+import dj_database_url
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -69,7 +70,7 @@ DATABASES = {
     }
 }
 
-import dj_database_url
+
 DATABASES['default'] =  dj_database_url.parse('postgres://chengmao:netdb@140.116.247.114:5432/pg_tainan')
 
 # Internationalization
@@ -90,6 +91,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
 STATIC_URL = '/static/'
+# Static asset configuration
+STATIC_ROOT = 'staticfiles'
+
 TEMPLATE_DIRS = (
     os.path.join(BASE_DIR, 'templates').replace('\\', '/'),
 )
